@@ -2,7 +2,7 @@
 Application d'inventaire MC2A
 ------------------------------
 
-Ce répository contien tout les fichiers sources conernant l'application de stock pour MC2A
+Ce répository contient tout les fichiers sources conernant l'application de stock pour MC2A
 
 
 ## But du projet
