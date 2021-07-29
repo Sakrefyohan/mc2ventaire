@@ -11,6 +11,7 @@ Afin de référencer toutes les entrées et sorties de materiel, il faut dévelo
 
 
 Features ajoutées:
+
     - Création de materiel dans la BDD
     - Suppression de materiel dans la BDD
     - Consultation de la BDD avec filtre et trie.
@@ -24,10 +25,11 @@ Adresse GitHub du programme :
 
 Installation :
 ------------
-    - Telecharger les fichiers dans le dossier du serveur Web voulu. 
-    - modifier le fichiers "traitement/connexion_bdd" avec vos information de base de données
-    - Créer la base de données selon ce modèle avec ces nom de tables et champs de table : 
+* Telecharger les fichiers dans le dossier du serveur Web voulu. 
+* modifier le fichiers "traitement/connexion_bdd" avec vos information de base de données
+* Créer la base de données selon ce modèle avec ces nom de tables et champs de table : 
     
+
     categorie : 
     - id
     - type
@@ -46,9 +48,9 @@ Installation :
 
 Fonctionnement :
 -----------
-    - La page d'accueil permet l'ajout et la suppression de materiel
-      - Le bouton consultation redirige vers la page d'affichage du stock
-      - Dans la consultation il ne faut pas cocher "La catégorie ainsi que le modèle pour un trie"
+* La page d'accueil permet l'ajout et la suppression de materiel   
+* Le bouton consultation redirige vers la page d'affichage du stock
+* Dans la consultation il ne faut pas cocher "La catégorie ainsi que le modèle pour un trie"
       
 Details :
 -----------
