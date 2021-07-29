@@ -1,67 +1,98 @@
-<?php session_start();
-include("../section/header.php");
-
-if (isset($_GET['check_modele']))
-{
-    $modele = $_GET['modele'];
-}
-
-if (isset($_GET['check_etat']))
-{
-    $etat = $_GET['etat'];
-}
-
-if (isset($_GET['check_categorie']))
-{
-    $categorie = $_GET['categorie'];
-}
-if (isset($_GET['check_numeroContrat']))
-{
-    $numeroContrat = $_GET['check_numeroContrat'];
-}
-
-include('../traitement/connexion_bdd.php');
-
-?>
 
 
-    <div class="body-bloc">
+    <?php
 
-        <h1>Consultation et génération de rapport</h1>
-        <p>Merci de cocher les champs à trier.</p>
+    /* Page de consultation de la base de donnée :
+     * Ici tout les filtres sont fait.
+     * Pour ajouter un filtre il faut choisir les condition à remplire afin d'afficher le tableau.
+     *
+     *
+     * */
 
-        <?php include("../section/form-consult-materiel.php"); ?>
+    //Ne pas edidter sauf en cas d'ajout de champs.
+    session_start();
+    include("../section/header.php");
+
+    if (isset($_GET['check_modele']))
+    {
+        $modele = $_GET['modele'];
+    }
+
+    if (isset($_GET['check_etat']))
+    {
+        $etat = $_GET['etat'];
+    }
+
+    if (isset($_GET['check_categorie']))
+    {
+        $categorie = $_GET['categorie'];
+    }
+    if (isset($_GET['check_numeroContrat']))
+    {
+        $numeroContrat = $_GET['check_numeroContrat'];
+    }
+
+    include('../traitement/connexion_bdd.php');
+    // Jusque la pas d'edit
+    ?>
 
 
-        <form method="post" action="..\index.php" >
-            <input type="submit" value="Menu Principale" id="bouton_envoyer"/>
-        </form>
+        <div class="body-bloc">
 
-    </div>
-        <br />
-        <br />
-    <div class="body-bloc">
+            <h1>Consultation et génération de rapport</h1>
+            <p>Merci de cocher les champs à trier.</p>
 
-        <h1>Rapport Generé :</h1>
-        <table>
+            <?php include("../section/form-consult-materiel.php"); ?>
 
-            <tr>
-                <th>Modele</th>
-                <th>Catégorie</th>
-                <th>État</th>
-                <th>Date d'entrée</th>
-                <th>Numéro de contrat</th>
-            </tr>
-        <?php
-        //
 
-        //SECTION D'affichage pour les modèles.
+            <form method="post" action="..\index.php" >
+                <input type="submit" value="Menu Principale" id="bouton_envoyer"/>
+            </form>
 
-        //Si Aucune valeur rien n'est cocher alors affiche toute la base.
-        if(!isset($modele) AND !isset($categorie) AND !isset($etat) AND !isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel ORDER BY modele ASC');
-            $req->execute(array());
-            $quantite = 0;
+        </div>
+            <br />
+            <br />
+        <div class="body-bloc">
+
+            <h1>Rapport Generé :</h1>
+            <table>
+
+                <tr>
+                    <th>Modele</th>
+                    <th>Catégorie</th>
+                    <th>État</th>
+                    <th>Date d'entrée</th>
+                    <th>Numéro de contrat</th>
+                </tr>
+            <?php
+
+            //SECTION D'affichage pour les modèles.
+
+            //Si Aucune valeur rien n'est cocher alors affiche toute la base.
+            if(!isset($modele) AND !isset($categorie) AND !isset($etat) AND !isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel ORDER BY modele ASC');
+                $req->execute(array());
+                $quantite = 0;
+
+                while($resultat = $req->fetch())
+                {
+                    ++$quantite;
+                    ?>
+                    <tr>
+                        <td><?php echo $resultat['modele']?></td>
+                        <td><?php echo $resultat['categorie']?></td>
+                        <td><?php echo $resultat['etat']?></td>
+                        <td><?php echo $resultat['date_entree']?></td>
+                        <td><?php echo $resultat['numero_contrat']?></td>
+                    </tr>
+                <?php  }
+            }
+
+           //SECTION D'affichage pour les modèles.
+            if(isset($modele) AND !isset($categorie) AND !isset($etat) AND !isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel WHERE modele = ?');
+                $req->execute(array($modele));
+                $quantite = 0;
 
             while($resultat = $req->fetch())
             {
@@ -74,213 +105,178 @@ include('../traitement/connexion_bdd.php');
                     <td><?php echo $resultat['date_entree']?></td>
                     <td><?php echo $resultat['numero_contrat']?></td>
                 </tr>
-            <?php  }
-        }
+          <?php  }
+            }
 
-       //SECTION D'affichage pour les modèles.
-        if(isset($modele) AND !isset($categorie) AND !isset($etat) AND !isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE modele = ?');
-            $req->execute(array($modele));
-            $quantite = 0;
+            //Section D'affichage pour les modèle selon l'état
+            if(isset($modele) AND !isset($categorie) AND isset($etat) AND !isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel WHERE modele = ? AND etat = ?');
+                $req->execute(array($modele, $etat));
+                $quantite = 0;
 
-        while($resultat = $req->fetch())
-        {
-            ++$quantite;
+                while($resultat = $req->fetch())
+                {
+                    ++$quantite;
+          ?>
+                <tr>
+                    <td><?php echo $resultat['modele']?></td>
+                    <td><?php echo $resultat['categorie']?></td>
+                    <td><?php echo $resultat['etat']?></td>
+                    <td><?php echo $resultat['date_entree']?></td>
+                    <td><?php echo $resultat['numero_contrat']?></td>
+                </tr>
+                <?php  }
+                }
+
+            // Affiche les catégorie selon l'etat
+            if (!isset($modele) AND isset($categorie) AND isset($etat) AND !isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel WHERE categorie = ? AND etat = ?');
+                $req->execute(array($categorie, $etat));
+                $quantite = 0;
+
+                while($resultat = $req->fetch())
+                {
+                    ++$quantite;
+                    ?>
+                    <tr>
+                        <td><?php echo $resultat['modele']?></td>
+                        <td><?php echo $resultat['categorie']?></td>
+                        <td><?php echo $resultat['etat']?></td>
+                        <td><?php echo $resultat['date_entree']?></td>
+                        <td><?php echo $resultat['numero_contrat']?></td>
+                    </tr>
+                    <?php
+                }
+            }
+
+            //Affiche la catégorie
+            if(!isset($modele) AND isset($categorie) AND !isset($etat) AND !isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel WHERE categorie = ?');
+                $req->execute(array($categorie));
+                $quantite = 0;
+
+                while($resultat = $req->fetch())
+                {
+                    ++$quantite;
+                    ?>
+                    <tr>
+                        <td><?php echo $resultat['modele']?></td>
+                        <td><?php echo $resultat['categorie']?></td>
+                        <td><?php echo $resultat['etat']?></td>
+                        <td><?php echo $resultat['date_entree']?></td>
+                        <td><?php echo $resultat['numero_contrat']?></td>
+                    </tr>
+                <?php  }
+            }
+            // Affiche L'état
+            if(!isset($modele) AND !isset($categorie) AND isset($etat) AND !isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel WHERE etat = ?');
+                $req->execute(array($etat));
+                $quantite = 0;
+
+                while($resultat = $req->fetch())
+                {
+                    ++$quantite;
+                    ?>
+                    <tr>
+                        <td><?php echo $resultat['modele']?></td>
+                        <td><?php echo $resultat['categorie']?></td>
+                        <td><?php echo $resultat['etat']?></td>
+                        <td><?php echo $resultat['date_entree']?></td>
+                        <td><?php echo $resultat['numero_contrat']?></td>
+                    </tr>
+                <?php  }
+            }
+
+            //Affiche en fonction de l'état, du model, de la catégorie et du numero de contrat
+            if(isset($modele) AND isset($categorie) AND isset($etat) AND isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel WHERE modele = ? AND categorie = ? AND etat = ? AND numero_contrat = ? ');
+                $req->execute(array($modele, $categorie, $etat, $numeroContrat));
+                $quantite = 0;
+
+                while($resultat = $req->fetch())
+                {
+                    ++$quantite;
+                    ?>
+                    <tr>
+                        <td><?php echo $resultat['modele']?></td>
+                        <td><?php echo $resultat['categorie']?></td>
+                        <td><?php echo $resultat['etat']?></td>
+                        <td><?php echo $resultat['date_entree']?></td>
+                        <td><?php echo $resultat['numero_contrat']?></td>
+                    </tr>
+                <?php  }
+            }
+
+            //Affiche la catégorie l'état et le numero de contrat
+            if(!isset($modele) AND isset($categorie) AND isset($etat) AND isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel WHERE categorie = ? AND etat = ? AND numero_contrat = ? ');
+                $req->execute(array($categorie, $etat, $numeroContrat));
+                $quantite = 0;
+
+                while($resultat = $req->fetch())
+                {
+                    ++$quantite;
+                    ?>
+                    <tr>
+                        <td><?php echo $resultat['modele']?></td>
+                        <td><?php echo $resultat['categorie']?></td>
+                        <td><?php echo $resultat['etat']?></td>
+                        <td><?php echo $resultat['date_entree']?></td>
+                        <td><?php echo $resultat['numero_contrat']?></td>
+                    </tr>
+                <?php  }
+            }
+
+            // Affiche le modèle, l'état et le numero de contrat
+            if(isset($modele) AND !isset($categorie) AND isset($etat) AND isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel WHERE modele = ? AND etat = ? AND numero_contrat = ? ');
+                $req->execute(array($modele, $etat, $numeroContrat));
+                $quantite = 0;
+
+                while($resultat = $req->fetch())
+                {
+                    ++$quantite;
+                    ?>
+                    <tr>
+                        <td><?php echo $resultat['modele']?></td>
+                        <td><?php echo $resultat['categorie']?></td>
+                        <td><?php echo $resultat['etat']?></td>
+                        <td><?php echo $resultat['date_entree']?></td>
+                        <td><?php echo $resultat['numero_contrat']?></td>
+                    </tr>
+                <?php  }
+            }
+
+            //Affiche le modele avec le numéro de contrat
+            if(!isset($modele) AND !isset($categorie) AND !isset($etat) AND isset($numeroContrat)) {
+                $req = $bdd->prepare('SELECT * FROM materiel WHERE numero_contrat = ? ');
+                $req->execute(array($numeroContrat));
+                $quantite = 0;
+
+                while($resultat = $req->fetch())
+                {
+                    ++$quantite;
+                    ?>
+                    <tr>
+                        <td><?php echo $resultat['modele']?></td>
+                        <td><?php echo $resultat['categorie']?></td>
+                        <td><?php echo $resultat['etat']?></td>
+                        <td><?php echo $resultat['date_entree']?></td>
+                        <td><?php echo $resultat['numero_contrat']?></td>
+                    </tr>
+                <?php  }
+            }
+
             ?>
-            <tr>
-                <td><?php echo $resultat['modele']?></td>
-                <td><?php echo $resultat['categorie']?></td>
-                <td><?php echo $resultat['etat']?></td>
-                <td><?php echo $resultat['date_entree']?></td>
-                <td><?php echo $resultat['numero_contrat']?></td>
-            </tr>
-      <?php  }
-        }
+            </table>
 
-        //Section D'affichage pour les modèle selon l'état
-        if(isset($modele) AND !isset($categorie) AND isset($etat) AND !isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE modele = ? AND etat = ?');
-            $req->execute(array($modele, $etat));
-            $quantite = 0;
+            <p> Resultat retournées :  <?php if(isset($quantite)){echo $quantite;} ?></p>
+        </div>
+    <br />
 
-            while($resultat = $req->fetch())
-            {
-                ++$quantite;
-      ?>
-            <tr>
-                <td><?php echo $resultat['modele']?></td>
-                <td><?php echo $resultat['categorie']?></td>
-                <td><?php echo $resultat['etat']?></td>
-                <td><?php echo $resultat['date_entree']?></td>
-                <td><?php echo $resultat['numero_contrat']?></td>
-            </tr>
-            <?php  }
-            }
+    </body>
 
-        // Affiche les catégorie selon l'etat
-        if (!isset($modele) AND isset($categorie) AND isset($etat) AND !isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE categorie = ? AND etat = ?');
-            $req->execute(array($categorie, $etat));
-            $quantite = 0;
+    <?php $req->closeCursor(); ?>
 
-            while($resultat = $req->fetch())
-            {
-                ++$quantite;
-                ?>
-                <tr>
-                    <td><?php echo $resultat['modele']?></td>
-                    <td><?php echo $resultat['categorie']?></td>
-                    <td><?php echo $resultat['etat']?></td>
-                    <td><?php echo $resultat['date_entree']?></td>
-                    <td><?php echo $resultat['numero_contrat']?></td>
-                </tr>
-                <?php
-            }
-        }
-
-        //Affiche la catégorie
-        if(!isset($modele) AND isset($categorie) AND !isset($etat) AND !isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE categorie = ?');
-            $req->execute(array($categorie));
-            $quantite = 0;
-
-            while($resultat = $req->fetch())
-            {
-                ++$quantite;
-                ?>
-                <tr>
-                    <td><?php echo $resultat['modele']?></td>
-                    <td><?php echo $resultat['categorie']?></td>
-                    <td><?php echo $resultat['etat']?></td>
-                    <td><?php echo $resultat['date_entree']?></td>
-                    <td><?php echo $resultat['numero_contrat']?></td>
-                </tr>
-            <?php  }
-        }
-        // Affiche L'état
-        if(!isset($modele) AND !isset($categorie) AND isset($etat) AND !isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE etat = ?');
-            $req->execute(array($etat));
-            $quantite = 0;
-
-            while($resultat = $req->fetch())
-            {
-                ++$quantite;
-                ?>
-                <tr>
-                    <td><?php echo $resultat['modele']?></td>
-                    <td><?php echo $resultat['categorie']?></td>
-                    <td><?php echo $resultat['etat']?></td>
-                    <td><?php echo $resultat['date_entree']?></td>
-                    <td><?php echo $resultat['numero_contrat']?></td>
-                </tr>
-            <?php  }
-        }
-
-        if(isset($modele) AND isset($categorie) AND isset($etat) AND isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE modele = ? AND categorie = ? AND etat = ? AND numero_contrat = ? ');
-            $req->execute(array($modele, $categorie, $etat, $numeroContrat));
-            $quantite = 0;
-
-            while($resultat = $req->fetch())
-            {
-                ++$quantite;
-                ?>
-                <tr>
-                    <td><?php echo $resultat['modele']?></td>
-                    <td><?php echo $resultat['categorie']?></td>
-                    <td><?php echo $resultat['etat']?></td>
-                    <td><?php echo $resultat['date_entree']?></td>
-                    <td><?php echo $resultat['numero_contrat']?></td>
-                </tr>
-            <?php  }
-        }
-
-        if(!isset($modele) AND isset($categorie) AND isset($etat) AND isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE categorie = ? AND etat = ? AND numero_contrat = ? ');
-            $req->execute(array($categorie, $etat, $numeroContrat));
-            $quantite = 0;
-
-            while($resultat = $req->fetch())
-            {
-                ++$quantite;
-                ?>
-                <tr>
-                    <td><?php echo $resultat['modele']?></td>
-                    <td><?php echo $resultat['categorie']?></td>
-                    <td><?php echo $resultat['etat']?></td>
-                    <td><?php echo $resultat['date_entree']?></td>
-                    <td><?php echo $resultat['numero_contrat']?></td>
-                </tr>
-            <?php  }
-        }
-
-        if(isset($modele) AND !isset($categorie) AND isset($etat) AND isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE modele = ? AND etat = ? AND numero_contrat = ? ');
-            $req->execute(array($modele, $etat, $numeroContrat));
-            $quantite = 0;
-
-            while($resultat = $req->fetch())
-            {
-                ++$quantite;
-                ?>
-                <tr>
-                    <td><?php echo $resultat['modele']?></td>
-                    <td><?php echo $resultat['categorie']?></td>
-                    <td><?php echo $resultat['etat']?></td>
-                    <td><?php echo $resultat['date_entree']?></td>
-                    <td><?php echo $resultat['numero_contrat']?></td>
-                </tr>
-            <?php  }
-        }
-
-        if(!isset($modele) AND !isset($categorie) AND !isset($etat) AND isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE numero_contrat = ? ');
-            $req->execute(array($numeroContrat));
-            $quantite = 0;
-
-            while($resultat = $req->fetch())
-            {
-                ++$quantite;
-                ?>
-                <tr>
-                    <td><?php echo $resultat['modele']?></td>
-                    <td><?php echo $resultat['categorie']?></td>
-                    <td><?php echo $resultat['etat']?></td>
-                    <td><?php echo $resultat['date_entree']?></td>
-                    <td><?php echo $resultat['numero_contrat']?></td>
-                </tr>
-            <?php  }
-        }
-
-        if(isset($modele) AND !isset($categorie) AND isset($etat) AND isset($numeroContrat)) {
-            $req = $bdd->prepare('SELECT * FROM materiel WHERE modele = ? AND etat = ? AND numero_contrat = ? ');
-            $req->execute(array($modele, $etat, $numeroContrat));
-            $quantite = 0;
-
-            while($resultat = $req->fetch())
-            {
-                ++$quantite;
-                ?>
-                <tr>
-                    <td><?php echo $resultat['modele']?></td>
-                    <td><?php echo $resultat['categorie']?></td>
-                    <td><?php echo $resultat['etat']?></td>
-                    <td><?php echo $resultat['date_entree']?></td>
-                    <td><?php echo $resultat['numero_contrat']?></td>
-                </tr>
-            <?php  }
-        }
-
-        ?>
-        </table>
-
-        <p> Resultat retournées :  <?php if(isset($quantite)){echo $quantite;} ?></p>
-    </div>
-<br />
-
-</body>
-
-<?php $req->closeCursor(); ?>
-
-</html>
+    </html>

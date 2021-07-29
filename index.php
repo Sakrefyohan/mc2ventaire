@@ -1,4 +1,11 @@
 <?php
+
+/* Page de démarrage
+ * Ici tout les branchement sont fait selon une hierarchie très précise.
+ * Bien lire et comprendre les redirection de page.
+ *  
+ *
+ * */
 session_start();
 
 

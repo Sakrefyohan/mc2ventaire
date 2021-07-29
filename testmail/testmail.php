@@ -1,4 +1,7 @@
 <?php
+
+/* Page de mailing automatique en cas de manquement dans l'inventaire*/
+/* NE PAS MODIFIER */
 include('../traitement/connexion_bdd.php');
 $i = 0;
 $categorieList = array();
@@ -7,12 +10,22 @@ $quantiteList = array();
 $headers = "From: MC2VENTAIRE <mc2ventaire@mc2a.fr>\r\n".
     "MIME-Version: 1.0" . "\r\n" .
     "Content-type: text/html; charset=UTF-8" . "\r\n";
+/**********************************************/
+
+
+
+/* Modifier les catégorie nécessaire au trie*/
 $etat = 'NEUF';
 $etat2 = 'RECYCLAGE';
 
 $req1 = $bdd->prepare('SELECT * FROM categorie ORDER BY type ASC');
 $req1->execute();
 
+/* Méthode afin de verifier l'inventaire
+ * Cette page est ajouté a la sortie de materiel qui permet la vérification a chaque sortie de materiel.
+ * Déplacer cette page ou alors lancer une tâche journalier pour acceder a cette page pour verifier tout les jours.
+ *
+ * */
 while($resultat = $req1->fetch())
 {
 
@@ -35,6 +48,9 @@ while($resultat = $req1->fetch())
 
     $total = $quantiteRecyclage + $quantiteNeuf;
 
+    /* Définir les catégorie a prendre en comtpe dans le calcule de la rupture du stock
+     * Modifier "$total" pour qu'il correspondent à la quantité d'objet nécéssaire pour la commande du stock.
+    */
     if ($total < 5 AND (
         $categorie == 'Ecran' OR
         $categorie == 'Imprimante Simple' OR
@@ -47,6 +63,7 @@ while($resultat = $req1->fetch())
         $categorie == 'Souris' OR
         $categorie == 'Souris Ergonomique')) {
 
+        /* Mail HTML très baqique : voir pour PHPMailer pour une configuration plus complète du mail.*/
         $message = "<!DOCTYPE html>
                     <html>
                     <head>
@@ -71,9 +88,10 @@ while($resultat = $req1->fetch())
                     </body>
                     </html>";
 
+        /*Ici l'ajout des expéditeurs*/
         $to = "y.sakref@mc2a.fr , l.ramefison@mc2a.fr";
 
-
+        /* Fonction d'envoie du mail */
         mail($to,"Rupture de Stock",$message,$headers);
     }
 

@@ -51,7 +51,18 @@ Fonctionnement :
 * La page d'accueil permet l'ajout et la suppression de materiel   
 * Le bouton consultation redirige vers la page d'affichage du stock
 * Dans la consultation il ne faut pas cocher "La catégorie ainsi que le modèle pour un trie"
-      
+
+Technique :
+-----------
+* Dossier __"Consultation"__ concerne la page de consultation de la BDD et tourne sur elle même, elle est générer via le formulaire __"section/form-consult-materiel.php"__
+* Dossier __"CSS"__ concerne l'affichage de la page
+* Dossier __"Formulaire"__ concerne l'affichage des formulaire de la page index (ajout et sortie de materiel)
+* Chaque formulaire est coupler au champs dans le dossier __"SECTION"__
+* Le fichier __"Section/form-categorie"__ & __"Section/form-model"__ sont remplis par les modèle et catégorie dans la BDD, il faut donc ajouter les modèle et catégorie a la BDD
+    * J'utilise des fichiers CSV des modèles placer dans le dossier CSV, une fois la catégorie ou le modèle ajouter au bon endroit, je __Truncate__ la table _modèle_ ou _catégorie_ pour ensuite réimporter complètement la table avec les nouveaux champs et ainsi garder l'ordre des champs.  
+
+
+
 Details :
 -----------
 L'application est totalement autonome et ne nécéssite aucune connexion internet si le serveur BDD et apache est sur la même machine. 
