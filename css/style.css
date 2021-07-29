@@ -1,0 +1,84 @@
+body{
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 10px;
+    width: auto;
+    background-color: rgb(7, 80, 0);
+}
+
+
+.body-bloc{
+
+    text-align: center;
+    justify-content: center;
+    margin: auto;
+    margin-top: 20px;
+    background-color: #00f8a5;
+    padding: 20px;
+
+
+}
+#intern_bloc{
+    display : flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.section-bloc{
+    background-color: #41c7e2;
+    margin: 0px 25px;
+    padding: 0px 10px;
+}
+
+#form_connection{
+
+}
+
+#bouton_envoyer{
+    margin-right: 20px;
+}
+
+label{
+    text-transform: uppercase;
+}
+th{
+    font-size: 22px;
+}
+
+td,th /* Toutes les cellules des tableaux... */
+{
+    border: 1px solid black; /* auront une bordure de 1px */
+    padding: 8px 10px;
+
+}
+
+td{
+    word-break: keep-all;
+}
+
+table
+{
+    border-collapse: collapse; /* Les bordures du tableau seront collées (plus joli) */
+}
+
+/* Liens et boutons */
+a, .bouton_application, button, #bouton_envoyer{
+    background-color: #1cbb00;
+    box-shadow: 0 5px 0 #1d7600;
+    color: white;
+    padding: 1em 1.5em;
+    position: relative;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin : 10px 5px;
+}
+
+a:hover , .bouton_application:hover, button:hover, #bouton_envoyer:hover {
+    background-color: #13cd02;
+}
+
+a:active, .bouton_application:active, button:active, #bouton_envoyer:active {
+    box-shadow: none;
+    top: 5px;
+}
