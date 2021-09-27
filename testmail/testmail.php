@@ -89,10 +89,10 @@ while($resultat = $req1->fetch())
                     </html>";
 
         /*Ici l'ajout des expéditeurs*/
-        $to = "y.sakref@mc2a.fr , l.ramefison@mc2a.fr";
+        $to = "support@mc2a.fr";
 
         /* Fonction d'envoie du mail */
-        mail($to,"Rupture de Stock",$message,$headers);
+        mail($to,"MC2VENTAIRE - Rupture de Stock",$message,$headers);
     }
 
     $req2->closeCursor();
